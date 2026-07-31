@@ -16,4 +16,10 @@ resource "aws_lambda_function" "resume_ai" {
 
   timeout     = 30
   memory_size = 256
+
+  environment {
+  variables = {
+    MODEL_ID = "us.anthropic.claude-sonnet-4-6"
+  }
+}
 }
