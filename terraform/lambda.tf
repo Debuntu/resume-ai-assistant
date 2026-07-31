@@ -1,6 +1,8 @@
 data "archive_file" "lambda_zip" {
-  type        = "zip"
-  source_file = "../src/lambda_function.py"
+  type = "zip"
+
+  source_dir = "../src"
+
   output_path = "../src/lambda.zip"
 }
 
@@ -18,8 +20,8 @@ resource "aws_lambda_function" "resume_ai" {
   memory_size = 256
 
   environment {
-  variables = {
-    MODEL_ID = "us.anthropic.claude-sonnet-4-6"
+    variables = {
+      MODEL_ID = "us.anthropic.claude-sonnet-4-6"
+    }
   }
-}
 }
