@@ -1,0 +1,26 @@
+*.pyc
+__pycache__/
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+terraform.tfstate.d/
+*.zip
+.env
+
+# Ignore local Git config/cache files
+.gitconfig.local
+.gitattributes.local
+.gitignore.local
+
+# Ignore common editor and OS cache files
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Ignore common local caches and temporary folders
+.cache/
+coverage/
+node_modules/
+.vscode/
+.idea/
