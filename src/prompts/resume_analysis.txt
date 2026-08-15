@@ -8,10 +8,18 @@ Resume:
 Job Description:
 {jobDescription}
 
-Return JSON with:
+Return ONLY valid JSON.
 
-match_score
-strengths
-missing_skills
-professional_summary
-recommendations
+Do not include markdown.
+Do not include ```json.
+Do not include explanations outside the JSON.
+
+Use exactly this structure:
+
+{{
+  "match_score": 0,
+  "strengths": [],
+  "missing_skills": [],
+  "professional_summary": "",
+  "recommendations": []
+}}
