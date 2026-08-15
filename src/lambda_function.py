@@ -1,67 +1,68 @@
 import json
-import boto3
+import logging
 
-bedrock = boto3.client("bedrock-runtime", region_name="us-east-1")
 
-MODEL_ID = "anthropic.claude-sonnet-4-20250514-v1:0"
+from config import LOG_LEVEL
+from prompt_builder import build_prompt
+from bedrock_client import invoke_claude
 
+# Configure logging
+logger = logging.getLogger()
+logger.setLevel(LOG_LEVEL)
 
 def lambda_handler(event, context):
+    logger.info("Resume analysis request received.")
 
-    body = json.loads(event.get("body", "{}"))
+    try:
+        # Parse request body
+        body = json.loads(event.get("body", "{}"))
 
-    resume = body.get("resume", "")
-    job = body.get("jobDescription", "")
+        task = body.get("task")
+        resume = body.get("resume")
+        job_description = body.get("jobDescription")
 
-    prompt = f"""
-You are an expert technical recruiter.
+        # Validate required fields
+        if not task or not resume:
+            return {
+                "statusCode":400,
+                "body":json.dumps({
+                "message":
+                "task and resume are required"
+             })
+            }
 
-Compare this resume against the job description.
+        logger.info("Building AI prompt...")
 
-Resume:
-{resume}
+        prompt = build_prompt(
+            task,
+            resume,
+            job_description
+        )
 
-Job Description:
-{job}
+        logger.info("Invoking Amazon Bedrock...")
 
-Return ONLY valid JSON with this format:
+        response = invoke_claude(prompt)
 
-{{
-  "match_score": number,
-  "strengths": [],
-  "missing_skills": [],
-  "professional_summary": "",
-  "recommendations": []
-}}
-"""
+        logger.info("Resume analysis completed successfully.")
 
-    response = bedrock.invoke_model(
-        modelId=MODEL_ID,
-        body=json.dumps({
-            "anthropic_version": "bedrock-2023-05-31",
-            "max_tokens": 1000,
-            "messages": [
-                {
-                    "role": "user",
-                    "content": [
-                        {
-                            "type": "text",
-                            "text": prompt
-                        }
-                    ]
-                }
-            ]
-        })
-    )
+        return {
+            "statusCode": 200,
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "body": response
+        }
 
-    result = json.loads(response["body"].read())
+    except Exception as e:
+        logger.exception("Unhandled exception during resume analysis.")
 
-    answer = result["content"][0]["text"]
-
-    return {
-        "statusCode": 200,
-        "headers": {
-            "Content-Type": "application/json"
-        },
-        "body": answer
-    }
+        return {
+            "statusCode": 500,
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "body": json.dumps({
+                "message": "Internal Server Error",
+                "error": str(e)
+            })
+        }
