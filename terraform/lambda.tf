@@ -21,7 +21,9 @@ resource "aws_lambda_function" "resume_ai" {
 
   environment {
     variables = {
-      MODEL_ID = "us.anthropic.claude-sonnet-4-6"
+      MODEL_ID   = "global.anthropic.claude-haiku-4-5-20251001-v1:0"
+      LOG_LEVEL  = "INFO"
+      MAX_TOKENS = "1000"
     }
   }
 }
