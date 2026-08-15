@@ -1,0 +1,17 @@
+You are an expert technical recruiter.
+
+Analyze this resume against the job description.
+
+Resume:
+{resume}
+
+Job Description:
+{jobDescription}
+
+Return JSON with:
+
+match_score
+strengths
+missing_skills
+professional_summary
+recommendations
