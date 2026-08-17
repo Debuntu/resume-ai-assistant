@@ -1,7 +1,18 @@
 resource "aws_apigatewayv2_api" "resume_api" {
   name          = "resume-ai-api"
   protocol_type = "HTTP"
+
+  cors_configuration {
+    allow_origins = ["*"]
+
+    allow_methods = ["POST", "OPTIONS"]
+
+    allow_headers = [
+      "Content-Type"
+    ]
+  }
 }
+
 
 resource "aws_apigatewayv2_integration" "lambda" {
   api_id = aws_apigatewayv2_api.resume_api.id
@@ -11,6 +22,7 @@ resource "aws_apigatewayv2_integration" "lambda" {
   payload_format_version = "2.0"
 }
 
+
 resource "aws_apigatewayv2_route" "analyze" {
   api_id = aws_apigatewayv2_api.resume_api.id
 
@@ -19,6 +31,7 @@ resource "aws_apigatewayv2_route" "analyze" {
   target = "integrations/${aws_apigatewayv2_integration.lambda.id}"
 }
 
+
 resource "aws_apigatewayv2_stage" "default" {
   api_id = aws_apigatewayv2_api.resume_api.id
 
@@ -26,6 +39,7 @@ resource "aws_apigatewayv2_stage" "default" {
 
   auto_deploy = true
 }
+
 
 resource "aws_lambda_permission" "api_gateway" {
   statement_id = "AllowExecutionFromAPIGateway"

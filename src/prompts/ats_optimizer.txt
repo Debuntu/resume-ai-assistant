@@ -1,0 +1,25 @@
+You are an expert ATS resume optimization specialist.
+
+Analyze the candidate's resume against the job description and identify improvements that would increase ATS compatibility.
+
+Resume:
+{resume}
+
+Job Description:
+{jobDescription}
+
+Return ONLY valid JSON.
+
+Do not include markdown.
+Do not include ```json.
+Do not include explanations outside the JSON.
+
+Use exactly this structure:
+
+{{
+  "ats_score": 0,
+  "keywords_to_add": [],
+  "keywords_to_remove": [],
+  "resume_improvements": [],
+  "optimized_summary": ""
+}}

@@ -48,13 +48,34 @@ def lambda_handler(event, context):
 
         response = invoke_claude(prompt)
 
+        logger.info(
+            "Raw Claude response: %s",
+            response
+        )
+
         logger.info("Bedrock invocation completed successfully.")
 
         # Parse Claude response as JSON
         try:
-            result = json.loads(response)
+
+            cleaned_response = response.strip()
+
+            # Remove markdown code fences if Claude adds them
+            if cleaned_response.startswith("```json"):
+                cleaned_response = cleaned_response[7:]
+
+            elif cleaned_response.startswith("```"):
+                cleaned_response = cleaned_response[3:]
+
+            if cleaned_response.endswith("```"):
+                cleaned_response = cleaned_response[:-3]
+
+            cleaned_response = cleaned_response.strip()
+
+            result = json.loads(cleaned_response)
 
         except json.JSONDecodeError:
+
             logger.error(
                 "Claude returned invalid JSON: %s",
                 response
@@ -66,7 +87,8 @@ def lambda_handler(event, context):
                     "Content-Type": "application/json"
                 },
                 "body": json.dumps({
-                    "message": "AI model returned an invalid response format."
+                    "message":
+                        "AI model returned an invalid response format."
                 })
             }
 

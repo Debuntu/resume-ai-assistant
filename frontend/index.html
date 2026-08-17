@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Resume AI Assistant</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <header>
+            <h1>Resume AI Assistant</h1>
+
+            <p>
+                AI-powered tools to analyze, optimize, and prepare
+                your resume for your next opportunity.
+            </p>
+        </header>
+
+
+        <section class="card">
+
+            <!-- AI Task -->
+
+            <label for="task">
+                AI Task
+            </label>
+
+            <select id="task">
+
+                <option value="resume_analysis">
+                    Resume Analysis
+                </option>
+
+                <option value="cover_letter">
+                    Cover Letter
+                </option>
+
+                <option value="interview_questions">
+                    Interview Questions
+                </option>
+
+                <option value="ats_optimizer">
+                    ATS Optimization
+                </option>
+
+            </select>
+
+
+            <!-- Dynamic Task Description -->
+
+            <p id="taskDescription" class="task-description"></p>
+
+
+            <!-- Resume -->
+
+            <label for="resume">
+                Resume
+            </label>
+
+            <textarea
+                id="resume"
+                placeholder="Paste your complete resume here..."
+            ></textarea>
+
+
+            <!-- Job Description -->
+
+            <label for="jobDescription">
+                Job Description
+            </label>
+
+            <textarea
+                id="jobDescription"
+                placeholder="Paste the complete job description here..."
+            ></textarea>
+
+
+            <!-- Dynamic Button -->
+
+            <button id="analyzeBtn">
+                Analyze Resume
+            </button>
+
+        </section>
+
+
+        <!-- Loading -->
+
+        <section id="loading" class="loading hidden">
+
+            Analyzing your information...
+
+        </section>
+
+
+        <!-- Results -->
+
+        <section id="result" class="card hidden">
+
+            <h2>Result</h2>
+
+            <div id="resultContent"></div>
+
+        </section>
+
+    </div>
+
+
+    <script src="app.js"></script>
+
+</body>
+
+</html>
