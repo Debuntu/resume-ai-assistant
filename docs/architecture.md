@@ -1,7 +1,3 @@
-
----
-
-```markdown
 # Resume AI Assistant - Architecture
 
 ## 1. Application Architecture
@@ -25,7 +21,7 @@ flowchart LR
 
         PromptBuilder["Prompt Builder<br/>prompt_builder.py"]
 
-        Prompts["Prompt Templates"]
+        Prompts["Prompt Templates<br/>*.txt"]
 
         Bedrock["Amazon Bedrock"]
 
@@ -38,15 +34,15 @@ flowchart LR
 
     UI -->|"HTTPS POST /analyze"| API
 
-    API --> Lambda
+    API -->|"Invoke Lambda"| Lambda
 
-    Lambda --> PromptBuilder
+    Lambda -->|"Build prompt"| PromptBuilder
 
-    PromptBuilder --> Prompts
+    PromptBuilder -->|"Load template"| Prompts
 
-    Prompts --> PromptBuilder
+    Prompts -->|"Return template"| PromptBuilder
 
-    PromptBuilder --> Lambda
+    PromptBuilder -->|"Final prompt"| Lambda
 
     Lambda -->|"InvokeModel"| Bedrock
 
@@ -54,16 +50,120 @@ flowchart LR
 
     Claude --> Bedrock
 
-    Bedrock --> Lambda
+    Bedrock -->|"AI response"| Lambda
 
-    Lambda --> Logs
+    Lambda -->|"Application logs"| Logs
 
     Lambda -->|"JSON response"| API
 
-    API --> UI
+    API -->|"HTTP response"| UI
 
     UI --> User
+```
 
+---
+
+## 2. CI/CD Architecture
+
+The infrastructure is managed using Terraform and deployed through GitHub Actions using GitHub OIDC.
+
+```mermaid
+flowchart LR
+
+    Developer["Developer"]
+
+    GitHub["GitHub Repository"]
+
+    Actions["GitHub Actions"]
+
+    OIDC["GitHub OIDC"]
+
+    IAM["AWS IAM<br/>GitHub Actions Role"]
+
+    Terraform["Terraform"]
+
+    S3["Amazon S3<br/>Terraform Remote State"]
+
+    AWS["AWS Infrastructure"]
+
+    Developer -->|"git push"| GitHub
+
+    GitHub --> Actions
+
+    Actions -->|"OIDC authentication"| OIDC
+
+    OIDC -->|"AssumeRoleWithWebIdentity"| IAM
+
+    IAM -->|"Temporary AWS credentials"| Actions
+
+    Actions --> Terraform
+
+    Terraform -->|"Read / Write State"| S3
+
+    Terraform -->|"Provision / Update"| AWS
+```
+
+---
+
+## 3. AWS Components
+
+| Component | Purpose |
+|---|---|
+| Amazon API Gateway | Exposes the `/analyze` HTTP endpoint |
+| AWS Lambda | Processes requests and invokes Amazon Bedrock |
+| Amazon Bedrock | Provides access to foundation models |
+| Anthropic Claude | Performs resume and job-related AI tasks |
+| Amazon CloudWatch | Stores Lambda execution logs |
+| AWS IAM | Controls access to AWS resources |
+| Amazon S3 | Stores Terraform remote state |
+| GitHub OIDC | Provides secure GitHub-to-AWS authentication |
+| Terraform | Provisions and manages AWS infrastructure |
+
+---
+
+## 4. AI Processing Flow
+
+```mermaid
+flowchart TD
+
+    Request["User Request"]
+
+    Task["Task Selection"]
+
+    Builder["prompt_builder.py"]
+
+    Template["Task Prompt Template"]
+
+    Prompt["Final AI Prompt"]
+
+    Bedrock["Amazon Bedrock"]
+
+    Claude["Anthropic Claude"]
+
+    JSON["AI JSON Response"]
+
+    Result["Customer Portal Result"]
+
+    Request --> Task
+
+    Task --> Builder
+
+    Builder --> Template
+
+    Template --> Builder
+
+    Builder --> Prompt
+
+    Prompt --> Bedrock
+
+    Bedrock --> Claude
+
+    Claude --> Bedrock
+
+    Bedrock --> JSON
+
+    JSON --> Result
+```
 
 2. Application Request Flow
 
