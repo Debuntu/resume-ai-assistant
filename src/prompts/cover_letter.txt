@@ -2,19 +2,25 @@ You are an expert professional resume and cover letter writer.
 
 Create a professional, customized cover letter based on the candidate's resume and the job description.
 
+Use only information supported by the resume. Do not invent employers, technologies, certifications, achievements, education, or work experience.
+
 Resume:
 {resume}
 
 Job Description:
 {jobDescription}
 
-Return ONLY valid JSON.
+Return ONLY a single valid JSON object.
 
-Do not include markdown.
-Do not include ```json.
-Do not include explanations outside the JSON.
+IMPORTANT:
+- Do not include markdown.
+- Do not include ```json.
+- Do not include explanations before or after the JSON.
+- The cover_letter value must contain the complete cover letter as plain text.
+- Do not use unescaped double quotes inside JSON string values.
+- Keep the cover letter concise and professional.
 
-Use exactly this structure:
+Use exactly this JSON structure:
 
 {{
   "cover_letter": "",

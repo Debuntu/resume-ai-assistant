@@ -13,6 +13,6 @@ LOG_LEVEL = os.getenv(
 MAX_TOKENS = int(
     os.getenv(
         "MAX_TOKENS",
-        "2000"
+        "3000"
     )
 )

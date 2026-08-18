@@ -44,41 +44,38 @@ def lambda_handler(event, context):
             job_description
         )
 
-        logger.info("Invoking Amazon Bedrock...")
-
+        # Invoke Claude through Amazon Bedrock.
         response = invoke_claude(prompt)
 
-        logger.info(
-            "Raw Claude response: %s",
-            response
-        )
+        # Log the raw model response so we can diagnose JSON parsing failures.
+        logger.info("RAW CLAUDE RESPONSE: %s", response)
 
-        logger.info("Bedrock invocation completed successfully.")
+        logger.info("Resume analysis completed successfully.")
 
-        # Parse Claude response as JSON
+        # Clean common formatting Claude may add around JSON.
+        cleaned_response = response.strip()
+
+        # Remove an opening Markdown JSON code fence.
+        if cleaned_response.startswith("```json"):
+            cleaned_response = cleaned_response[len("```json"):].strip()
+
+        # Remove a generic Markdown code fence if present.
+        elif cleaned_response.startswith("```"):
+            cleaned_response = cleaned_response[len("```"):].strip()
+
+        # Remove the closing Markdown code fence.
+        if cleaned_response.endswith("```"):
+            cleaned_response = cleaned_response[:-3].strip()
+
         try:
-
-            cleaned_response = response.strip()
-
-            # Remove markdown code fences if Claude adds them
-            if cleaned_response.startswith("```json"):
-                cleaned_response = cleaned_response[7:]
-
-            elif cleaned_response.startswith("```"):
-                cleaned_response = cleaned_response[3:]
-
-            if cleaned_response.endswith("```"):
-                cleaned_response = cleaned_response[:-3]
-
-            cleaned_response = cleaned_response.strip()
-
+            # Convert Claude's JSON text into a Python object.
             result = json.loads(cleaned_response)
 
         except json.JSONDecodeError:
-
+            # Log the response so we can diagnose malformed or truncated JSON.
             logger.error(
                 "Claude returned invalid JSON: %s",
-                response
+                cleaned_response
             )
 
             return {
@@ -91,7 +88,7 @@ def lambda_handler(event, context):
                         "AI model returned an invalid response format."
                 })
             }
-
+        
         logger.info("Resume analysis completed successfully.")
 
         # Return structured API response

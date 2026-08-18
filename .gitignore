@@ -6,6 +6,7 @@ terraform.tfstate.backup
 terraform.tfstate.d/
 *.zip
 .env
+.aws
 
 # Ignore local Git config/cache files
 .gitconfig.local

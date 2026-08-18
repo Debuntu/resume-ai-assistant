@@ -1,5 +1,5 @@
 const API_URL =
-    "https://b6wefho50a.execute-api.us-east-1.amazonaws.com/analyze";
+    "https://4c5lt6d6hb.execute-api.us-east-1.amazonaws.com/analyze";
 
 
 /* =========================================

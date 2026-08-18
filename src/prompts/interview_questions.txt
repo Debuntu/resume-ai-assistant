@@ -2,19 +2,28 @@ You are an experienced technical interviewer.
 
 Generate relevant interview questions based on the candidate's resume and the job description.
 
+Focus on technologies, responsibilities, projects, and skills that are actually present in the resume or required by the job description.
+
+Do not invent experience or technologies that are not supported by the provided information.
+
 Resume:
 {resume}
 
 Job Description:
 {jobDescription}
 
-Return ONLY valid JSON.
+Return ONLY a single valid JSON object.
 
-Do not include markdown.
-Do not include ```json.
-Do not include explanations outside the JSON.
+IMPORTANT:
+- Do not include markdown.
+- Do not include ```json.
+- Do not include explanations before or after the JSON.
+- Generate 8 to 10 relevant interview questions.
+- Each question must have a category and difficulty.
+- Keep each reason concise.
+- Do not use unescaped double quotes inside JSON string values.
 
-Use exactly this structure:
+Use exactly this JSON structure:
 
 {{
   "questions": [
