@@ -63,109 +63,7 @@ flowchart LR
 
 ---
 
-## 2. CI/CD Architecture
-
-The infrastructure is managed using Terraform and deployed through GitHub Actions using GitHub OIDC.
-
-```mermaid
-flowchart LR
-
-    Developer["Developer"]
-
-    GitHub["GitHub Repository"]
-
-    Actions["GitHub Actions"]
-
-    OIDC["GitHub OIDC"]
-
-    IAM["AWS IAM<br/>GitHub Actions Role"]
-
-    Terraform["Terraform"]
-
-    S3["Amazon S3<br/>Terraform Remote State"]
-
-    AWS["AWS Infrastructure"]
-
-    Developer -->|"git push"| GitHub
-
-    GitHub --> Actions
-
-    Actions -->|"OIDC authentication"| OIDC
-
-    OIDC -->|"AssumeRoleWithWebIdentity"| IAM
-
-    IAM -->|"Temporary AWS credentials"| Actions
-
-    Actions --> Terraform
-
-    Terraform -->|"Read / Write State"| S3
-
-    Terraform -->|"Provision / Update"| AWS
-```
-
----
-
-## 3. AWS Components
-
-| Component | Purpose |
-|---|---|
-| Amazon API Gateway | Exposes the `/analyze` HTTP endpoint |
-| AWS Lambda | Processes requests and invokes Amazon Bedrock |
-| Amazon Bedrock | Provides access to foundation models |
-| Anthropic Claude | Performs resume and job-related AI tasks |
-| Amazon CloudWatch | Stores Lambda execution logs |
-| AWS IAM | Controls access to AWS resources |
-| Amazon S3 | Stores Terraform remote state |
-| GitHub OIDC | Provides secure GitHub-to-AWS authentication |
-| Terraform | Provisions and manages AWS infrastructure |
-
----
-
-## 4. AI Processing Flow
-
-```mermaid
-flowchart TD
-
-    Request["User Request"]
-
-    Task["Task Selection"]
-
-    Builder["prompt_builder.py"]
-
-    Template["Task Prompt Template"]
-
-    Prompt["Final AI Prompt"]
-
-    Bedrock["Amazon Bedrock"]
-
-    Claude["Anthropic Claude"]
-
-    JSON["AI JSON Response"]
-
-    Result["Customer Portal Result"]
-
-    Request --> Task
-
-    Task --> Builder
-
-    Builder --> Template
-
-    Template --> Builder
-
-    Builder --> Prompt
-
-    Prompt --> Bedrock
-
-    Bedrock --> Claude
-
-    Claude --> Bedrock
-
-    Bedrock --> JSON
-
-    JSON --> Result
-```
-
-2. Application Request Flow
+## 2. Application Request Flow
 
 The application follows this sequence:
 
@@ -214,7 +112,7 @@ The application follows this sequence:
 15. Frontend displays the result
 
 
-3. Supported AI Tasks
+## 3. Supported AI Tasks
 
 The application currently supports four tasks:
 
@@ -232,10 +130,12 @@ resume_analysis.txt
 cover_letter.txt
 interview_questions.txt
 ats_optimizer.txt
-4. Prompt Architecture
+
+## 4. Prompt Architecture
 
 The application separates prompt templates from application code.
 
+```mermaid
 flowchart TD
 
     Request["API Request"]
@@ -264,11 +164,11 @@ flowchart TD
     Cover --> Bedrock
     Interview --> Bedrock
     ATS --> Bedrock
+```
 
+This approach makes it possible to modify prompts without changing the core Lambda application logic.
 
-    This approach makes it possible to modify prompts without changing the core Lambda application logic.
-
-5. Lambda Architecture
+## 5. Lambda Architecture
 
 The Lambda application is divided into separate responsibilities.
 
@@ -316,7 +216,7 @@ config.py
 
 Centralizes configuration.
 
-6. Customer Portal
+## 6. Customer Portal
 
 The customer portal is currently a lightweight frontend built with:
 
@@ -341,7 +241,7 @@ The frontend is accessed through:
 
 http://localhost:8000
 
-7. API Gateway
+## 7. API Gateway
 
 Amazon API Gateway exposes the backend endpoint:
 
@@ -359,7 +259,7 @@ AWS Lambda
 
 CORS is configured so that the local frontend can call the API.
 
-8. Amazon Bedrock
+## 8. Amazon Bedrock
 
 The Lambda function uses Amazon Bedrock Runtime to invoke Anthropic Claude.
 
@@ -375,8 +275,9 @@ The application does not hardcode AWS access keys.
 
 Lambda accesses Bedrock using its IAM execution role.
 
-9. Logging and Monitoring
+## 9. Logging and Monitoring
 
+```mermaid
 flowchart LR
 
     Lambda["AWS Lambda"]
@@ -388,6 +289,7 @@ flowchart LR
     Lambda --> CloudWatch
 
     CloudWatch --> Developer
+```
 
 Lambda logs are sent to Amazon CloudWatch.
 
@@ -402,10 +304,11 @@ Unexpected exceptions
 
 The Lambda function logs the raw model response when the response cannot be parsed as JSON.
 
-10. Infrastructure as Code
+## 0. Infrastructure as Code
 
 AWS infrastructure is managed using Terraform.
 
+```mermaid
 flowchart LR
 
     Lambda["AWS Lambda"]
@@ -417,6 +320,7 @@ flowchart LR
     Lambda --> CloudWatch
 
     CloudWatch --> Developer
+```
 
 The Terraform configuration provisions resources such as:
 
@@ -431,8 +335,9 @@ GitHub Actions IAM role
 
 Terraform provides repeatable infrastructure deployment.
 
-11. Terraform Remote State
+## 11. Terraform Remote State
 
+```mermaid
 flowchart LR
 
     Lambda["AWS Lambda"]
@@ -444,6 +349,7 @@ flowchart LR
     Lambda --> CloudWatch
 
     CloudWatch --> Developer
+```
 
 Terraform state is stored in Amazon S3.
 
@@ -458,18 +364,15 @@ backend "s3" {
   region = "us-east-1"
 
 
-  # Enable native S3 state locking.
-  use_lockfile = true
-
-
   # Encrypt state at rest.
   encrypt = true
 }
 
-12. CI/CD Architecture
+## 12. CI/CD Architecture
 
 The intended CI/CD architecture is:
 
+```mermaid
 flowchart LR
 
     Developer["Developer"]
@@ -501,8 +404,9 @@ flowchart LR
     Terraform --> S3
 
     Terraform --> AWS
+```
 
-13. CI/CD Workflow
+## 13. CI/CD Workflow
 
 The planned GitHub Actions workflow is:
 
@@ -534,7 +438,7 @@ GitHub Actions
     v
 AWS Infrastructure
 
-14. GitHub OIDC Security Model
+## 14. GitHub OIDC Security Model
 
 The project uses GitHub OIDC instead of long-lived AWS access keys.
 
@@ -564,7 +468,7 @@ The trust relationship is currently being finalized because the GitHub Actions w
 
 Not authorized to perform sts:AssumeRoleWithWebIdentity
 
-15. IAM Security
+## 15. IAM Security
 
 The architecture uses IAM roles instead of embedding AWS credentials.
 
@@ -593,7 +497,7 @@ Terraform / AWS
 
 A future improvement is to replace broad permissions with least-privilege policies.
 
-16. Resource Lifecycle
+## 16. Resource Lifecycle
 
 The project is intentionally designed so that AWS resources can be destroyed when not actively being used.
 
@@ -622,7 +526,7 @@ terraform plan
       v
 terraform apply
 
-17. Current Implementation Status
+## 17. Current Implementation Status
 
 Component	Status
 Customer Portal	Working locally
@@ -642,7 +546,7 @@ GitHub Actions IAM Role	Created
 GitHub Actions OIDC Authentication	Needs trust-policy fix
 Automated CI/CD	In progress
 
-18. Future Architecture Improvements
+## 18. Future Architecture Improvements
 
 Potential future improvements include:
 

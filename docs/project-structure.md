@@ -1,8 +1,6 @@
 
 ---
 
-# 3. `doc/project-structure.md`
-
 ```markdown
 # Resume AI Assistant - Project Structure
 
