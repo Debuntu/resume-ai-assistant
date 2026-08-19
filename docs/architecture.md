@@ -65,71 +65,95 @@ flowchart LR
 
 ## 2. Application Request Flow
 
-The application follows this sequence:
+The application follows this request and response flow:
 
-1. User opens the customer portal
-             |
-             v
-2. User selects an AI task
-             |
-             v
-3. User enters resume/job information
-             |
-             v
-4. JavaScript sends POST /analyze
-             |
-             v
-5. API Gateway receives the request
-             |
-             v
-6. API Gateway invokes Lambda
-             |
-             v
-7. Lambda validates the request
-             |
-             v
-8. Lambda calls prompt_builder.py
-             |
-             v
-9. Prompt Builder selects the task prompt
-             |
-             v
-10. Lambda invokes Amazon Bedrock
-             |
-             v
-11. Claude processes the prompt
-             |
-             v
-12. Lambda parses the model response
-             |
-             v
-13. Lambda returns JSON
-             |
-             v
-14. API Gateway returns the response
-             |
-             v
-15. Frontend displays the result
-
+```text
+                         USER
+                           |
+                           v
+                  +------------------+
+                  | Customer Portal  |
+                  | HTML/CSS/JS      |
+                  +--------+---------+
+                           |
+                           | POST /analyze
+                           v
+                  +------------------+
+                  |  API Gateway     |
+                  |    HTTP API      |
+                  +--------+---------+
+                           |
+                           | Invoke
+                           v
+                  +------------------+
+                  |   AWS Lambda     |
+                  |   Python 3.12    |
+                  +--------+---------+
+                           |
+                           | Validate request
+                           v
+                  +------------------+
+                  | Prompt Builder   |
+                  | prompt_builder.py|
+                  +--------+---------+
+                           |
+                           | Select prompt
+                           v
+                  +------------------+
+                  | Prompt Template  |
+                  |    *.txt         |
+                  +--------+---------+
+                           |
+                           | Final prompt
+                           v
+                  +------------------+
+                  | Amazon Bedrock   |
+                  +--------+---------+
+                           |
+                           | InvokeModel
+                           v
+                  +------------------+
+                  | Anthropic Claude |
+                  |    Haiku 4.5     |
+                  +--------+---------+
+                           |
+                           | AI response
+                           v
+                  +------------------+
+                  |   AWS Lambda     |
+                  | Parse JSON       |
+                  +--------+---------+
+                           |
+                           | JSON response
+                           v
+                  +------------------+
+                  |  API Gateway     |
+                  +--------+---------+
+                           |
+                           | HTTP response
+                           v
+                  +------------------+
+                  | Customer Portal  |
+                  | Display result   |
+                  +------------------+
+```
 
 ## 3. Supported AI Tasks
 
 The application currently supports four tasks:
 
-resume_analysis
-cover_letter
-interview_questions
-ats_optimizer
+-resume_analysis
+-cover_letter
+-interview_questions
+-ats_optimizer
 
-The corresponding prompt files are:
-
-src/prompts/
+The corresponding prompt files at src/prompts/ are: 
 
 
-resume_analysis.txt
-cover_letter.txt
-interview_questions.txt
-ats_optimizer.txt
+-resume_analysis.txt
+-cover_letter.txt
+-interview_questions.txt
+-ats_optimizer.txt
 
 ## 4. Prompt Architecture
 
@@ -172,6 +196,8 @@ This approach makes it possible to modify prompts without changing the core Lamb
 
 The Lambda application is divided into separate responsibilities.
 
+
+```text
 lambda_function.py
         |
         +---- config.py
@@ -183,6 +209,8 @@ lambda_function.py
                     v
              Amazon Bedrock
 lambda_function.py
+
+```
 
 Acts as the application controller.
 
@@ -226,11 +254,15 @@ JavaScript
 
 The portal communicates directly with API Gateway.
 
+
+```text
 Browser
    |
    | HTTPS
    v
 API Gateway
+
+```
 
 During local development it is served using:
 
@@ -249,6 +281,8 @@ POST /analyze
 
 The API uses an HTTP API and Lambda proxy integration.
 
+
+```text
 Customer Portal
       |
       v
@@ -256,6 +290,8 @@ API Gateway HTTP API
       |
       v
 AWS Lambda
+
+```
 
 CORS is configured so that the local frontend can call the API.
 
@@ -410,6 +446,8 @@ flowchart LR
 
 The planned GitHub Actions workflow is:
 
+
+```text
 git push
     |
     v
@@ -437,11 +475,14 @@ GitHub Actions
     |
     v
 AWS Infrastructure
+```
 
 ## 14. GitHub OIDC Security Model
 
 The project uses GitHub OIDC instead of long-lived AWS access keys.
 
+
+```text
 GitHub Actions
       |
       | OIDC Token
@@ -457,6 +498,7 @@ Temporary AWS Credentials
       |
       v
 Terraform
+```
 
 The GitHub OIDC provider already exists in AWS:
 
@@ -474,6 +516,7 @@ The architecture uses IAM roles instead of embedding AWS credentials.
 
 Lambda:
 
+```text
 Lambda
   |
   v
@@ -494,6 +537,7 @@ IAM Role
   |
   v
 Terraform / AWS
+```
 
 A future improvement is to replace broad permissions with least-privilege policies.
 
@@ -503,6 +547,7 @@ The project is intentionally designed so that AWS resources can be destroyed whe
 
 Normal development lifecycle:
 
+```text
 terraform apply
       |
       v
@@ -513,11 +558,13 @@ terraform destroy
       |
       v
 AWS resources removed
+```
 
 The Terraform S3 state backend remains available.
 
 When development resumes:
 
+```text
 terraform init
       |
       v
@@ -525,6 +572,7 @@ terraform plan
       |
       v
 terraform apply
+```
 
 ## 17. Current Implementation Status
 
@@ -552,7 +600,7 @@ Potential future improvements include:
 
 Current:
 
-
+```text
 Frontend
    |
 API Gateway
@@ -560,9 +608,10 @@ API Gateway
 Lambda
    |
 Bedrock
-
+```
 Future:
 
+```text
 Frontend
    |
    v
@@ -579,6 +628,7 @@ Lambda
    +----> CloudWatch
    |
    +----> Application metrics
+```
 
 Potential additions:
 
