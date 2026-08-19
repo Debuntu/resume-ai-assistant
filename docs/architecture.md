@@ -207,11 +207,9 @@ lambda_function.py
                     |
                     v
              Amazon Bedrock
-lambda_function.py
-
 ```
 
-Acts as the application controller.
+lambda_function.py acts as the application controller.
 
 Responsibilities:
 
@@ -223,6 +221,7 @@ Responsibilities:
 - Parse response
 - Return HTTP response
 - Log errors
+
 prompt_builder.py
 
 Responsible for:
@@ -231,6 +230,7 @@ Responsible for:
 - Locating prompt templates
 - Reading prompt files
 - Injecting resume/job-description data
+
 bedrock_client.py
 
 Responsible for:
@@ -239,6 +239,7 @@ Responsible for:
 - Building the model request
 - Invoking the model
 - Returning the model response
+
 config.py
 
 Centralizes configuration.
@@ -265,7 +266,7 @@ API Gateway
 
 During local development it is served using:
 
-# Run a local HTTP server for the frontend.
+Run a local HTTP server for the frontend.
 python3 -m http.server 8000
 
 The frontend is accessed through:
@@ -339,7 +340,7 @@ CloudWatch logs are used for:
 
 The Lambda function logs the raw model response when the response cannot be parsed as JSON.
 
-## 0. Infrastructure as Code
+## 10. Infrastructure as Code
 
 AWS infrastructure is managed using Terraform.
 
