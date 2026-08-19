@@ -1,7 +1,3 @@
-
----
-
-```markdown
 # Resume AI Assistant - Project Structure
 
 ## Repository Layout
@@ -44,3 +40,4 @@ resume-ai-assistant/
 └── .github/
     └── workflows/
         └── terraform.yml
+```
