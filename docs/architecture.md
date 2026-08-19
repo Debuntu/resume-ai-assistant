@@ -393,14 +393,14 @@ The S3 backend provides a centralized state location shared between local Terraf
 
 The backend uses:
 
-# Store Terraform state remotely in S3.
+#Store Terraform state remotely in S3.
 backend "s3" {
   bucket = "YOUR-TERRAFORM-STATE-BUCKET"
   key    = "resume-ai-assistant/terraform.tfstate"
   region = "us-east-1"
 
 
-  # Encrypt state at rest.
+  #Encrypt state at rest.
   encrypt = true
 }
 
@@ -482,8 +482,7 @@ AWS Infrastructure
 The project uses GitHub OIDC instead of long-lived AWS access keys.
 
 
-```mermaid
-flowchart LR
+```text
 
     GitHub Actions
       |
@@ -508,9 +507,7 @@ arn:aws:iam::949100095136:oidc-provider/token.actions.githubusercontent.com
 
 The Terraform configuration manages the GitHub Actions IAM role.
 
-The trust relationship is currently being finalized because the GitHub Actions workflow encountered:
-
-Not authorized to perform sts:AssumeRoleWithWebIdentity
+The trust relationship is currently being finalized because the GitHub Actions workflow encountered: Not authorized to perform sts:AssumeRoleWithWebIdentity
 
 ## 15. IAM Security
 
