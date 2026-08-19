@@ -142,18 +142,17 @@ The application follows this request and response flow:
 
 The application currently supports four tasks:
 
--resume_analysis
--cover_letter
--interview_questions
--ats_optimizer
+- resume_analysis
+- cover_letter
+- interview_questions
+- ats_optimizer
 
-The corresponding prompt files at src/prompts/ are: 
+The corresponding prompt files at src/prompts/ are:
 
-
--resume_analysis.txt
--cover_letter.txt
--interview_questions.txt
--ats_optimizer.txt
+- resume_analysis.txt
+- cover_letter.txt
+- interview_questions.txt
+- ats_optimizer.txt
 
 ## 4. Prompt Architecture
 
@@ -216,30 +215,30 @@ Acts as the application controller.
 
 Responsibilities:
 
-Parse API Gateway event
-Validate input
-Determine task
-Build prompt
-Invoke Bedrock
-Parse response
-Return HTTP response
-Log errors
+- Parse API Gateway event
+- Validate input
+- Determine task
+- Build prompt
+- Invoke Bedrock
+- Parse response
+- Return HTTP response
+- Log errors
 prompt_builder.py
 
 Responsible for:
 
-Validating supported tasks
-Locating prompt templates
-Reading prompt files
-Injecting resume/job-description data
+- Validating supported tasks
+- Locating prompt templates
+- Reading prompt files
+- Injecting resume/job-description data
 bedrock_client.py
 
 Responsible for:
 
-Creating the Bedrock Runtime client
-Building the model request
-Invoking the model
-Returning the model response
+- Creating the Bedrock Runtime client
+- Building the model request
+- Invoking the model
+- Returning the model response
 config.py
 
 Centralizes configuration.
@@ -248,9 +247,9 @@ Centralizes configuration.
 
 The customer portal is currently a lightweight frontend built with:
 
-HTML
-CSS
-JavaScript
+- HTML
+- CSS
+- JavaScript
 
 The portal communicates directly with API Gateway.
 
@@ -331,12 +330,12 @@ Lambda logs are sent to Amazon CloudWatch.
 
 CloudWatch logs are used for:
 
-Application debugging
-Bedrock errors
-IAM errors
-JSON parsing errors
-API failures
-Unexpected exceptions
+- Application debugging
+- Bedrock errors
+- IAM errors
+- JSON parsing errors
+- API failures
+- Unexpected exceptions
 
 The Lambda function logs the raw model response when the response cannot be parsed as JSON.
 
@@ -360,14 +359,14 @@ flowchart LR
 
 The Terraform configuration provisions resources such as:
 
-API Gateway
-Lambda
-IAM roles
-IAM policies
-Lambda permissions
-CORS configuration
-GitHub OIDC integration
-GitHub Actions IAM role
+- API Gateway
+- Lambda
+- IAM roles
+- IAM policies
+- Lambda permissions
+- CORS configuration
+- GitHub OIDC integration
+- GitHub Actions IAM role
 
 Terraform provides repeatable infrastructure deployment.
 
@@ -482,8 +481,10 @@ AWS Infrastructure
 The project uses GitHub OIDC instead of long-lived AWS access keys.
 
 
-```text
-GitHub Actions
+```mermaid
+flowchart LR
+
+    GitHub Actions
       |
       | OIDC Token
       v
@@ -576,23 +577,24 @@ terraform apply
 
 ## 17. Current Implementation Status
 
-Component	Status
-Customer Portal	Working locally
-API Gateway	Working
-Lambda	Working
-Bedrock Integration	Working
-Resume Analysis	Working
-ATS Optimization	Working
-Cover Letter	Needs response-format improvement
-Interview Questions	Needs response-format improvement
-CORS	Working
-CloudWatch Logging	Working
-Terraform	Working
-S3 Remote State	Configured
-GitHub OIDC Provider	Configured
-GitHub Actions IAM Role	Created
-GitHub Actions OIDC Authentication	Needs trust-policy fix
-Automated CI/CD	In progress
+| Component | Status |
+|---|---|
+| Customer Portal | Working locally |
+| API Gateway | Working |
+| Lambda | Working |
+| Bedrock Integration | Working |
+| Resume Analysis | Working |
+| ATS Optimization | Working |
+| Cover Letter | Needs response-format improvement |
+| Interview Questions | Needs response-format improvement |
+| CORS | Working |
+| CloudWatch Logging | Working |
+| Terraform | Working |
+| S3 Remote State | Configured |
+| GitHub OIDC Provider | Configured |
+| GitHub Actions IAM Role | Created |
+| GitHub Actions OIDC Authentication | Needs trust-policy fix |
+| Automated CI/CD | In progress |
 
 ## 18. Future Architecture Improvements
 
@@ -632,15 +634,15 @@ Lambda
 
 Potential additions:
 
-Authentication
-CloudFront
-S3 frontend hosting
-WAF
-API throttling
-Structured logging
-Automated testing
-Model response validation
-Retry logic
-Dead-letter handling
-Separate dev/prod environments
-Least-privilege IAM
+- Authentication
+- CloudFront
+- S3 frontend hosting
+- WAF
+- API throttling
+- Structured logging
+- Automated testing
+- Model response validation
+- Retry logic
+- Dead-letter handling
+- Separate dev/prod environments
+- Least-privilege IAM
